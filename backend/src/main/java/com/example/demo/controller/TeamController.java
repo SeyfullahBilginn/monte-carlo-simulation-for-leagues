@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.exception.ResourseNotFoundException;
 import com.example.demo.model.Match;
+import com.example.demo.model.Simulation;
 import com.example.demo.model.Team;
+import com.example.demo.repository.MatchRepository;
 import com.example.demo.repository.TeamRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -34,6 +37,9 @@ public class TeamController {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private MatchRepository matchRepository;
 
     // get read user
     @GetMapping("/teams")
@@ -112,7 +118,19 @@ public class TeamController {
         results.add(firstMatch);
         results.add(secondMatch);
 
+        matchRepository.save(firstMatch);
+        matchRepository.save(secondMatch);
+
         return results;
+    }
+
+    @GetMapping("/simulate/{numOfWeek}")
+    public Map<String, Integer> simulate(@PathVariable int numOfWeek) {
+        System.out.println("SIMULATE");
+        List<Match> matches = matchRepository.findAll();
+        List<Team> teams = teamRepository.findAll();
+        Simulation simulation = new Simulation(matches, teams, numOfWeek);
+        return simulation.iterate();
     }
 
     public void doMatches(Match match) {
@@ -128,16 +146,16 @@ public class TeamController {
         int awayTeamGoal = match.awayTeamGoal;
 
         homeTeam.average = homeTeam.average + homeTeamGoal - awayTeamGoal;
-        awayTeam.average = homeTeam.average + awayTeamGoal - homeTeamGoal;
+        awayTeam.average = awayTeam.average + awayTeamGoal - homeTeamGoal;
 
         if (homeTeamGoal > awayTeamGoal) {
             homeTeam.points = homeTeam.points + 3;
             homeTeam.numOfWon++;
-            awayTeam.numOfLost--;
+            awayTeam.numOfLost++;
         } else if (homeTeamGoal < awayTeamGoal) {
             awayTeam.points = awayTeam.points + 3;
-            homeTeam.numOfWon--;
-            awayTeam.numOfLost++;
+            homeTeam.numOfLost++;
+            awayTeam.numOfWon++;
         } else {
             awayTeam.points = awayTeam.points + 1;
             homeTeam.points = homeTeam.points + 1;

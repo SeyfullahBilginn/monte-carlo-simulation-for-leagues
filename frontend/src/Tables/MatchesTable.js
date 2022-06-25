@@ -30,6 +30,8 @@ export default function MatchesTable({matches}) {
                                     //     inputComponent: NumberFormatCustom,
                                     // }}
                                     variant="standard"
+                                    size='small'
+                                    style={{maxWidth:40}}
                                 />
                             </TableCell>
                             <TableCell >
@@ -43,6 +45,8 @@ export default function MatchesTable({matches}) {
                                     //     inputComponent: NumberFormatCustom,
                                     // }}
                                     variant="standard"
+                                    size='small'
+                                    style={{maxWidth:40}}
                                 />
                             </TableCell>
                             <TableCell >{match.awayTeamName}</TableCell>
