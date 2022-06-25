@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.security.NoSuchProviderException;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ public class TeamController {
     // get read user
     @GetMapping("/teams")
     public List<Team> getAllTeams() {
+        System.out.println("getAllTeams");
         return teamRepository.findAll();
     }
 
@@ -44,10 +46,18 @@ public class TeamController {
 
     // create team
     @PostMapping("/teams")
-    public Team addInitialTeam(@RequestBody String teamName) throws NoSuchProviderException {
+    public Team addInitialTeam(@RequestBody Team addedTeam) throws NoSuchProviderException {
 
-        Team team = new Team(teamName, 0, 0, 0, 0, 0);
-        return teamRepository.save(team);
+        // Team team = new Team(teamName, 0, 0, 0, 0, 0);
+        return teamRepository.save(addedTeam);
+    }
+
+    @PostMapping("playNextWeek")
+    public List<Team> playNextWeek(List<Team> teams) {
+        for (Team team : teams) {
+            System.out.println(team);
+        }
+        return teams;
     }
 
     // update user

@@ -1,11 +1,18 @@
-import Home from './Home';
+import Home from './Pages/Home';
+import Landing from './Pages/Landing';
 
 const routes = [
     {
         name: "Home",
         key: "home",
-        route: "/",
+        route: "/home",
         component: <Home />,
+    },
+    {
+        name: "landing",
+        key: "landing",
+        route: "/",
+        component: <Landing />,
     },
 ]
 
