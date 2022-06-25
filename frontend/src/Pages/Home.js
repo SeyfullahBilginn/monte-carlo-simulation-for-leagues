@@ -10,8 +10,11 @@ import { useEffect } from 'react';
 export default function Home() {
     const [teams, setTeams] = useState([]);
     const [numOfWeek, setNumOfWeek] = useState(0);
+    const [matchesOfWeek, setMatchesOfWeek] = useState([])
+
     async function getTeams() {
         TeamService.getTeams().then(res => {
+            console.log("res");
             setTeams(res.data)
         }).catch(err => {
             console.error(err);
@@ -19,11 +22,13 @@ export default function Home() {
     }
 
     async function nextWeek() {
-        TeamService.playNextWeekRandomly().then(res => {
+        console.log(numOfWeek);
+        TeamService.playNextWeekRandomly(numOfWeek + 1).then(res => {
             console.log(res);
-            setNumOfWeek(numOfWeek++);
+            setMatchesOfWeek(res.data)
+            setNumOfWeek(numOfWeek + 1);
         }).catch(err => {
-            console.log(err);
+            console.error(err);
         })
     }
 
@@ -34,17 +39,24 @@ export default function Home() {
 
     return (
         <div style={{ padding: 10 }}>
+            <div>{numOfWeek}</div>
             <div style={{ display: "flex", flexDirection: "row" }}>
 
                 <LeagueTable rows={teams} />
 
-                <MatchesTable />
+                <MatchesTable matches={matchesOfWeek} />
 
                 <PredictionsTable />
             </div>
             <div>
                 <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
-                <Button variant="contained" style={{ margin: 10 }}>Next Week</Button>
+                <Button
+                    variant="contained"
+                    style={{ margin: 10 }}
+                    onClick={() => nextWeek()}
+                >
+                    Next Week
+                </Button>
                 <Button
                     onClick={() => getTeams()}
                     variant="contained"
