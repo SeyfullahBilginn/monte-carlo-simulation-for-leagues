@@ -19,7 +19,12 @@ const rowsProbability = [
     createData('Manchester City', "15%"),
 ];
 
-export default function PredictionsTable() {
+export default function PredictionsTable({ predictions }) {
+    React.useEffect(() => {
+        console.log("table");
+        console.log(predictions);
+    }, [])
+
     return (
         <TableContainer component={Paper}
             style={{
@@ -35,20 +40,23 @@ export default function PredictionsTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rowsProbability.map((row) => (
+                    {predictions.length>0 ? predictions.map((item) => (
                         <TableRow
-                            key={row.name}
+                            key={item.teamName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.calories}</TableCell>
-                            <TableCell align="right">{row.fat}</TableCell>
-                            <TableCell align="right">{row.carbs}</TableCell>
-                            <TableCell align="right">{row.protein}</TableCell>
+                                <TableCell component="th" scope="row">
+                                    {item.teamName}
+                                </TableCell>
+                                <TableCell align="right">%{item.percentage}</TableCell>
                         </TableRow>
-                    ))}
+                    ))
+                    :
+                    (
+                        <div style={{color:"red"}}>Predictions can be seen after 3 weeks</div>
+                    )
+                
+                }
                 </TableBody>
             </Table>
         </TableContainer>

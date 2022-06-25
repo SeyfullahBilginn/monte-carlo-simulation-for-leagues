@@ -2,7 +2,7 @@ import * as React from 'react';
 import LeagueTable from '../Tables/LeagueTable';
 import PredictionsTable from '../Tables/PredictionsTable';
 import MatchesTable from '../Tables/MatchesTable';
-import { Button } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import TeamService from '../Services/TeamService';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -11,6 +11,7 @@ export default function Home() {
     const [teams, setTeams] = useState([]);
     const [numOfWeek, setNumOfWeek] = useState(0);
     const [matchesOfWeek, setMatchesOfWeek] = useState([])
+    const [predictionsData, setPredictionsData] = useState([]);
 
     async function getTeams() {
         TeamService.getTeams().then(res => {
@@ -32,22 +33,46 @@ export default function Home() {
         })
     }
 
+    function getSimulate() {
+        if(numOfWeek>=3) {
+            console.log("SIM");
+            TeamService.getSimulate(numOfWeek).then(res => {
+                console.log(res.data);
+                setPredictionsData(res.data);
+                const predictions = [];
+                Object.keys(res.data).map(key => {
+                    console.log("-----");
+                    console.log(key);
+                    predictions.push({ "teamName": key, "percentage": res.data[key] })
+                    // setPredictionsData(...predictions, { "teamName": key, "percentage": res.data[key] })
+                })
+                setPredictionsData(predictions);
+                console.log(predictions);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+    }
+
     useEffect(() => {
         getTeams();
     }, [numOfWeek])
 
 
     return (
-        <div style={{ padding: 10 }}>
+        <Grid container style={{ padding: 10 }}>
             <div>{numOfWeek}</div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-
-                <LeagueTable rows={teams} />
-
-                <MatchesTable matches={matchesOfWeek} />
-
-                <PredictionsTable />
-            </div>
+            <Grid container style={{ display: "flex", flexDirection: "row" }}>
+                <Grid item>
+                    <LeagueTable rows={teams} />
+                </Grid>
+                <Grid item maxWidth={500}>
+                    <MatchesTable matches={matchesOfWeek} />
+                </Grid>
+                <Grid item>
+                    <PredictionsTable predictions={predictionsData} />
+                </Grid>
+            </Grid>
             <div>
                 <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
                 <Button
@@ -64,7 +89,14 @@ export default function Home() {
                 >
                     Get Teams
                 </Button>
+                <Button
+                    onClick={() => getSimulate()}
+                    variant="contained"
+                    style={{ margin: 10 }}
+                >
+                    Get Simulate
+                </Button>
             </div>
-        </div>
+        </Grid>
     )
 }
