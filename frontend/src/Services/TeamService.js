@@ -13,8 +13,8 @@ class TeamService {
         return axios.get(API_BASE_URL + "/teams")
     }
 
-    playNextWeekRandomly() {
-        return axios.post(API_BASE_URL + "/playNextWeekRandomly");
+    playNextWeekRandomly(numOfWeek) {
+        return axios.post(API_BASE_URL + "/playNextWeekRandomly/" + numOfWeek);
 
     }
 

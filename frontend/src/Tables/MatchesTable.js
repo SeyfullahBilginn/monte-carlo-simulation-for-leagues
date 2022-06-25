@@ -7,32 +7,22 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TextField } from '@mui/material';
 
-
-function createData(homeTeam, fat, carbs, awayTeam) {
-    return { homeTeam, fat, carbs, awayTeam };
-}
-
-const rowsProbability = [
-    createData('Arsenal', "2", "3", "Chelsea"),
-    createData('Manchester City', "4", "1", "Liverpool"),
-];
-
-export default function MatchesTable() {
+export default function MatchesTable({matches}) {
     return (
         <TableContainer component={Paper}>
             <div>nth Week Matches</div>
             <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                 <TableBody>
-                    {rowsProbability.map((row) => (
+                    {matches.map((match) => (
                         <TableRow
-                            key={row.homeTeam}
+                            key={match.homeTeam}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell >{row.homeTeam}</TableCell>
+                            <TableCell >{match.homeTeamName}</TableCell>
                             <TableCell >
                                 <TextField
                                     label=""
-                                    value={12}
+                                    value={match.homeTeamGoal}
                                     // onChange={handleChange}
                                     name="numberformat"
                                     id="formatted-numberformat-input"
@@ -45,7 +35,7 @@ export default function MatchesTable() {
                             <TableCell >
                                 <TextField
                                     label=""
-                                    value={12}
+                                    value={match.awayTeamGoal}
                                     // onChange={handleChange}
                                     name="numberformat"
                                     id="formatted-numberformat-input"
@@ -55,7 +45,7 @@ export default function MatchesTable() {
                                     variant="standard"
                                 />
                             </TableCell>
-                            <TableCell >{row.awayTeam}</TableCell>
+                            <TableCell >{match.awayTeamName}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
