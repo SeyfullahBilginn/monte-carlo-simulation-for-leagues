@@ -1,4 +1,4 @@
-# Monte Carlo Simulation for League!
+# Monte Carlo Simulation for League
 
 
 
