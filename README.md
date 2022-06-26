@@ -1,6 +1,11 @@
 # Monte Carlo Simulation for League!
 
-![84jPNW_d807504c408968a418e946980bec1f3c_00-00-00_00-00-30_1](https://user-images.githubusercontent.com/86732121/175828529-e17a020c-483c-4685-a52a-b03f0e1d6e7b.gif)
+
+
+https://user-images.githubusercontent.com/86732121/175828831-205fd2d1-a9a5-4965-9690-ca42a16c8d92.mp4
+
+
+
 
 ## Development Process
 
