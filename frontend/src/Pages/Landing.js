@@ -10,8 +10,6 @@ export default function Landing() {
     const addedTeamRef = useRef();
 
     function addTeam() {
-        console.log("addTeam");
-        console.log("ref: " + addedTeamRef.current);
         const addedTeam = {
             teamName: addedTeamRef.current.value,
             points: 0,
