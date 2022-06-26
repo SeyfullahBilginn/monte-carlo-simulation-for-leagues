@@ -7,23 +7,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-export default function LeagueTable({rows}) {
+export default function LeagueTable({rows, numOfWeek}) {
 
-    // function createData(name, pts, p, w, d, l, gd) {
-    //     return { name, pts, p, w, d, l, gd };
-    // }
-    // const rows = [
-    //     createData('Arsenal', 1, 2, 3, 4, 5, 6),
-    //     createData('Liverpool', 1, 2, 3, 4, 5, 6),
-    //     createData('Chelsea', 1, 2, 3, 4, 5, 6),
-    //     createData('Manchester City', 1, 2, 3, 4, 5, 6),
-    // ];
     return (
         <TableContainer component={Paper}
             style={{
                 backgroundColor: "RGB(220,220,220)", margin: 0, padding: 0
             }}>
-            <div>League Table</div>
+            <div>League Table at {numOfWeek}th week</div>
             <Table sx={{ minWidth: 250 }} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>

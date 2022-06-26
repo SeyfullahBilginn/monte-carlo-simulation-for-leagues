@@ -13,25 +13,25 @@ public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int matchId;
+    private int matchId;
 
     @Column(name = "homeTeamName")
-    public String homeTeamName;
+    private String homeTeamName;
 
     @Column(name = "awayTeamName")
-    public String awayTeamName;
+    private String awayTeamName;
 
     @Column(name = "homeTeamId")
-    public int homeTeamId;
+    private int homeTeamId;
 
     @Column(name = "awayTeamId")
-    public int awayTeamId;
+    private int awayTeamId;
 
     @Column(name = "homeTeamGoal")
-    public int homeTeamGoal;
+    private int homeTeamGoal;
 
     @Column(name = "awayTeamGoal")
-    public int awayTeamGoal;
+    private int awayTeamGoal;
 
     public Match(
             String homeTeamName,
@@ -51,6 +51,62 @@ public class Match {
     }
 
     public Match() {
+    }
+
+    public int getMatchId() {
+        return this.matchId;
+    }
+
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+
+    public String getHomeTeamName() {
+        return this.homeTeamName;
+    }
+
+    public void setHomeTeamName(String homeTeamName) {
+        this.homeTeamName = homeTeamName;
+    }
+
+    public String getAwayTeamName() {
+        return this.awayTeamName;
+    }
+
+    public void setAwayTeamName(String awayTeamName) {
+        this.awayTeamName = awayTeamName;
+    }
+
+    public int getHomeTeamId() {
+        return this.homeTeamId;
+    }
+
+    public void setHomeTeamId(int homeTeamId) {
+        this.homeTeamId = homeTeamId;
+    }
+
+    public int getAwayTeamId() {
+        return this.awayTeamId;
+    }
+
+    public void setAwayTeamId(int awayTeamId) {
+        this.awayTeamId = awayTeamId;
+    }
+
+    public int getHomeTeamGoal() {
+        return this.homeTeamGoal;
+    }
+
+    public void setHomeTeamGoal(int homeTeamGoal) {
+        this.homeTeamGoal = homeTeamGoal;
+    }
+
+    public int getAwayTeamGoal() {
+        return this.awayTeamGoal;
+    }
+
+    public void setAwayTeamGoal(int awayTeamGoal) {
+        this.awayTeamGoal = awayTeamGoal;
     }
 
 }

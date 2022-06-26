@@ -18,7 +18,7 @@ class TeamService {
     }
 
     getSimulate(numOfWeek) {
-        return axios.get(API_BASE_URL + "/simulate/" + numOfWeek)
+        return axios.request(API_BASE_URL + "/teams/simulate/" + numOfWeek)
     }
 
     deleteDb() {

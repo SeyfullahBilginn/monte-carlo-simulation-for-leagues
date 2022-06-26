@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import LeagueTable from '../Tables/LeagueTable';
 import PredictionsTable from '../Tables/PredictionsTable';
@@ -6,6 +7,7 @@ import { Button, Grid } from '@mui/material';
 import TeamService from '../Services/TeamService';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Home() {
     const [teams, setTeams] = useState([]);
@@ -42,7 +44,7 @@ export default function Home() {
     }
 
     function getSimulate() {
-        if(numOfWeek>=3) {
+        if (numOfWeek >= 3) {
             console.log("SIM");
             TeamService.getSimulate(numOfWeek).then(res => {
                 console.log(res.data);
@@ -64,6 +66,7 @@ export default function Home() {
 
     useEffect(() => {
         getTeams();
+        if (numOfWeek >= 3) getSimulate();
     }, [numOfWeek])
 
 
@@ -72,47 +75,67 @@ export default function Home() {
             <div>{numOfWeek}</div>
             <Grid container style={{ display: "flex", flexDirection: "row" }}>
                 <Grid item>
-                    <LeagueTable rows={teams} />
+                    <LeagueTable rows={teams} numOfWeek={numOfWeek} />
                 </Grid>
                 <Grid item maxWidth={500}>
-                    <MatchesTable matches={matchesOfWeek} />
+                    <MatchesTable matches={matchesOfWeek} numOfWeek={numOfWeek} />
                 </Grid>
                 <Grid item>
-                    <PredictionsTable predictions={predictionsData} />
+                    <PredictionsTable predictions={predictionsData} numOfWeek={numOfWeek} />
                 </Grid>
             </Grid>
-            <div>
-                <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
-                <Button
-                    variant="contained"
-                    style={{ margin: 10 }}
-                    onClick={() => nextWeek()}
-                >
-                    Next Week
-                </Button>
-                <Button
-                    onClick={() => getTeams()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                >
-                    Get Teams
-                </Button>
-                <Button
-                    onClick={() => getSimulate()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                >
-                    Get Simulate
-                </Button>
-                <Button
-                    onClick={() => deleteDb()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                    href="/"
-                >
-                    Delete Database
-                </Button>
-            </div>
+            {
+                numOfWeek == 6 ? (
+
+                    <Button
+                        onClick={() => deleteDb()}
+                        variant="contained"
+                        component="link"
+                        color="error"
+                        style={{ margin: 10 }}
+                        href="/"
+                        // startIcon={<DeleteIcon />}
+                    >
+                        Delete Database
+                    </Button>)
+                    :
+                    (
+                        <div>
+                            <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
+                            <Button
+                                variant="contained"
+                                style={{ margin: 10 }}
+                                onClick={() => nextWeek()}
+                            >
+                                Next Week
+                            </Button>
+                            <Button
+                                onClick={() => getTeams()}
+                                variant="contained"
+                                style={{ margin: 10 }}
+                            >
+                                Get Teams
+                            </Button>
+                            <Button
+                                onClick={() => getSimulate()}
+                                variant="contained"
+                                style={{ margin: 10 }}
+                            >
+                                Run Simulation
+                            </Button>
+                            <Button
+                                onClick={() => deleteDb()}
+                                variant="contained"
+                                color="error"
+                                style={{ margin: 10 }}
+                                href="/"
+                                startIcon={<DeleteIcon />}
+                            >
+                                Delete Database
+                            </Button>
+                        </div>
+                    )
+            }
         </Grid>
     )
 }

@@ -1,5 +1,5 @@
 import { Grid, TextField, Button } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TeamService from '../Services/TeamService';
 import LeagueTable from '../Tables/LeagueTable';
 
@@ -18,6 +18,8 @@ export default function Landing() {
             numOfDrawn: 0,
             numOfLost: 0,
             numOfPlayed: 0,
+            numOfGoalsFor: 0,
+            numOfGoalsAgainst: 0,
             average: 0,
         }
         setTeams(oldArray => [...oldArray, addedTeam]);
@@ -28,6 +30,14 @@ export default function Landing() {
     function addTeamToDb(addedTeam) {
         TeamService.addTeam(addedTeam);
     }
+
+    useEffect(() => {
+        TeamService.deleteDb().then(res => {
+            console.log("deletedDb");
+        }).catch(err => {
+            console.log(err);
+        })
+    }, [])
 
 
     return (

@@ -15,7 +15,7 @@ public class Simulation {
     private List<Integer> results;
     private Map<String, Integer> percentage;
     private int numOfWeek;
-    final int NUM_OF_ITERATION = 200;
+    final int NUM_OF_ITERATION = 100;
 
     public Simulation(List<Match> matches, List<Team> teams, int numOfWeek) {
         this.matches = matches;
@@ -32,15 +32,16 @@ public class Simulation {
         }
 
         for (int i = 0; i < teams.size(); i++) {
-            percentage.put(teams.get(i).teamName, Collections.frequency(results, i) * 100 / NUM_OF_ITERATION);
+            percentage.put(teams.get(i).getTeamName(), Collections.frequency(results, i) * 100 / NUM_OF_ITERATION);
         }
+
         return percentage;
     }
 
     public int perIteration() {
         List<Double> iterationResult = new ArrayList<>();
         for (Team team : teams) {
-            double total = team.points;
+            double total = team.getPoints();
             double mean = calculateMean(team);
             double std = calculateStd(team);
             for (int i = 0; i < 6 - numOfWeek; i++) {
@@ -55,25 +56,25 @@ public class Simulation {
     }
 
     public double calculateMean(Team team) {
-        return team.points / numOfWeek;
+        return team.getPoints() / numOfWeek;
     }
 
     public double calculateStd(Team team) {
         double total = 0;
         double mean = calculateMean(team);
         for (Match match : matches) {
-            if (team.teamId == match.homeTeamId) {
-                if (match.homeTeamGoal > match.awayTeamGoal) {
+            if (team.getTeamId() == match.getHomeTeamId()) {
+                if (match.getHomeTeamGoal() > match.getAwayTeamGoal()) {
                     total += Math.pow(3 - mean, 2);
-                } else if (match.homeTeamGoal == match.awayTeamGoal) {
+                } else if (match.getHomeTeamGoal() == match.getAwayTeamGoal()) {
                     total += Math.pow(1 - mean, 2);
                 } else {
                     total += Math.pow(0 - mean, 2);
                 }
-            } else if (team.teamId == match.awayTeamId) {
-                if (match.awayTeamGoal > match.homeTeamGoal) {
+            } else if (team.getTeamId() == match.getAwayTeamId()) {
+                if (match.getAwayTeamGoal() > match.getHomeTeamGoal()) {
                     total += Math.pow(3 - mean, 2);
-                } else if (match.homeTeamGoal == match.awayTeamGoal) {
+                } else if (match.getHomeTeamGoal() == match.getAwayTeamGoal()) {
                     total += Math.pow(1 - mean, 2);
                 } else {
                     total += Math.pow(0 - mean, 2);

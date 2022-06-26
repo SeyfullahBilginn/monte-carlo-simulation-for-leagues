@@ -42,49 +42,43 @@ public class TeamController {
     @Autowired
     private MatchRepository matchRepository;
 
-    // get read user
+    // static fixture guarantees each team will play
+    // each other 2 times (as home team and away team)
+    // it can be generated randomly in the next version
+    public Map<Integer, List<Integer>> fixture = new HashMap<Integer, List<Integer>>() {
+        {
+            put(1, Arrays.asList(0, 1, 2, 3));
+            put(2, Arrays.asList(0, 2, 1, 3));
+            put(3, Arrays.asList(0, 3, 1, 2));
+            put(4, Arrays.asList(1, 0, 3, 2));
+            put(5, Arrays.asList(2, 0, 3, 1));
+            put(6, Arrays.asList(3, 0, 2, 1));
+        }
+    };
+
+    // get all teams
     @GetMapping("/teams")
     public List<Team> getAllTeams() {
+        // sort by score in descending order
         return teamRepository.findAll(Sort.by(Sort.Direction.DESC, "points"));
     }
 
-    // get read user
-    @GetMapping("/teams/{id}")
-    public Team getTeam(@PathVariable int id) {
-        return teamRepository.findById(id)
-                .orElseThrow(() -> new ResourseNotFoundException("team Not Found"));
-    }
-
-    // create team
+    // create and save team
     @PostMapping("/teams")
     public Team addInitialTeam(@RequestBody Team addedTeam) throws NoSuchProviderException {
-
-        // Team team = new Team(teamName, 0, 0, 0, 0, 0);
         return teamRepository.save(addedTeam);
     }
 
+    // resets all database
     @DeleteMapping("/teams")
     public void deleteDatabase() {
         teamRepository.deleteAll();
         matchRepository.deleteAll();
     }
 
+    // plays next week's fixture with the random scores
     @PostMapping("/playNextWeekRandomly/{numOfWeek}")
     public List<Match> playNextWeek(@PathVariable int numOfWeek) {
-        HashMap<Integer, List<Integer>> fixture = new HashMap<>();
-        List<Integer> firstWeek = Arrays.asList(0, 1, 2, 3);
-        List<Integer> secondWeek = Arrays.asList(0, 2, 1, 3);
-        List<Integer> thirdWeek = Arrays.asList(0, 3, 1, 2);
-        List<Integer> fourthWeek = Arrays.asList(1, 0, 3, 2);
-        List<Integer> fifthWeek = Arrays.asList(2, 0, 3, 1);
-        List<Integer> sixthhWeek = Arrays.asList(3, 0, 2, 1);
-
-        fixture.put(1, firstWeek);
-        fixture.put(2, secondWeek);
-        fixture.put(3, thirdWeek);
-        fixture.put(4, fourthWeek);
-        fixture.put(5, fifthWeek);
-        fixture.put(6, sixthhWeek);
 
         System.out.println("numOfWeek: " + numOfWeek);
         List<Integer> matches = fixture.get(numOfWeek);
@@ -99,143 +93,150 @@ public class TeamController {
         List<Match> results = new ArrayList<>();
 
         Match firstMatch = new Match(
-                firstHomeTeam.teamName,
-                firstAwayTeam.teamName,
-                firstHomeTeam.teamId,
-                firstAwayTeam.teamId,
-                (int) (Math.random() * (10 - 0)) + 0,
-                (int) (Math.random() * (10 - 0)) + 0);
+                firstHomeTeam.getTeamName(),
+                firstAwayTeam.getTeamName(),
+                firstHomeTeam.getTeamId(),
+                firstAwayTeam.getTeamId(),
+                (int) (Math.random() * (4 - 0)) + 0,
+                (int) (Math.random() * (4 - 0)) + 0);
 
         doMatches(firstMatch);
 
+        // second matches in that week
         Team secondHomeTeam = teams.get(matches.get(2));
         Team secondAwayTeam = teams.get(matches.get(3));
 
         Match secondMatch = new Match(
-                secondHomeTeam.teamName,
-                secondAwayTeam.teamName,
-                secondHomeTeam.teamId,
-                secondAwayTeam.teamId,
-                (int) (Math.random() * (10 - 0)) + 0,
-                (int) (Math.random() * (10 - 0)) + 0);
+                secondHomeTeam.getTeamName(),
+                secondAwayTeam.getTeamName(),
+                secondHomeTeam.getTeamId(),
+                secondAwayTeam.getTeamId(),
+                (int) (Math.random() * (4 - 0)) + 0,
+                (int) (Math.random() * (4 - 0)) + 0);
         doMatches(secondMatch);
-        // doMatches(secondHomeTeam, secondAwayTeam);
+
+        // add matches to array in order to see in ui in a proper format
         results.add(firstMatch);
         results.add(secondMatch);
 
+        // save matches to db
         matchRepository.save(firstMatch);
         matchRepository.save(secondMatch);
 
         return results;
     }
 
-    @GetMapping("/simulate/{numOfWeek}")
+    // simulates left matches based on each team's pts they have already earned
+    @GetMapping("/teams/simulate/{numOfWeek}")
     public Map<String, Integer> simulate(@PathVariable int numOfWeek) {
-        System.out.println("SIMULATE");
+
         List<Match> matches = matchRepository.findAll();
         List<Team> teams = teamRepository.findAll();
+
         Simulation simulation = new Simulation(matches, teams, numOfWeek);
         return simulation.iterate();
     }
 
+    // do nth week matches with the random scores
     public void doMatches(Match match) {
-        Team homeTeam = teamRepository.findById(match.homeTeamId)
+        Team homeTeam = teamRepository.findById(match.getHomeTeamId())
                 .orElseThrow(() -> new ResourseNotFoundException("team Not Found"));
-        Team awayTeam = teamRepository.findById(match.awayTeamId)
+        Team awayTeam = teamRepository.findById(match.getAwayTeamId())
                 .orElseThrow(() -> new ResourseNotFoundException("team Not Found"));
 
-        System.out.println("homeTeamName: " + homeTeam.teamName + "homeTeamGoal: " + match.homeTeamGoal);
-        System.out.println("awayTeamName: " + awayTeam.teamName + "awayTeamGoal: " + match.awayTeamGoal);
+        int homeTeamGoal = match.getHomeTeamGoal();
+        int awayTeamGoal = match.getAwayTeamGoal();
 
-        int homeTeamGoal = match.homeTeamGoal;
-        int awayTeamGoal = match.awayTeamGoal;
+        // set average of teams
+        homeTeam.setAverage(homeTeam.getAverage() + homeTeamGoal - awayTeamGoal);
+        awayTeam.setAverage(awayTeam.getAverage() + awayTeamGoal - homeTeamGoal);
 
-        homeTeam.average = homeTeam.average + homeTeamGoal - awayTeamGoal;
-        awayTeam.average = awayTeam.average + awayTeamGoal - homeTeamGoal;
+        // set goals of teams
+        homeTeam.setNumOfGoalsFor(homeTeam.getNumOfGoalsFor() + homeTeamGoal);
+        homeTeam.setNumOfGoalsAgainst(homeTeam.getNumOfGoalsAgainst() + awayTeamGoal);
 
+        awayTeam.setNumOfGoalsFor(awayTeam.getNumOfGoalsFor() + awayTeamGoal);
+        awayTeam.setNumOfGoalsAgainst(awayTeam.getNumOfGoalsAgainst() + homeTeamGoal);
+
+        // set number of played matches
+        homeTeam.setNumOfPlayed(homeTeam.getNumOfPlayed() + 1);
+        awayTeam.setNumOfPlayed(awayTeam.getNumOfPlayed() + 1);
+
+        /*
+         * distribute points
+         * win => 3 pts
+         * draw => 1 pts
+         * lose => 0 pts
+         */
         if (homeTeamGoal > awayTeamGoal) {
-            homeTeam.points = homeTeam.points + 3;
-            homeTeam.numOfWon++;
-            awayTeam.numOfLost++;
+            homeTeam.setPoints(homeTeam.getPoints() + 3);
+            homeTeam.setNumOfWon(homeTeam.getNumOfWon() + 1);
+            awayTeam.setNumOfLost(awayTeam.getNumOfLost() + 1);
         } else if (homeTeamGoal < awayTeamGoal) {
-            awayTeam.points = awayTeam.points + 3;
-            homeTeam.numOfLost++;
-            awayTeam.numOfWon++;
+            awayTeam.setPoints(awayTeam.getPoints() + 3);
+            homeTeam.setNumOfLost(homeTeam.getNumOfLost() + 1);
+            awayTeam.setNumOfWon(awayTeam.getNumOfWon());
         } else {
-            awayTeam.points = awayTeam.points + 1;
-            homeTeam.points = homeTeam.points + 1;
-            homeTeam.numOfDrawn++;
-            awayTeam.numOfDrawn++;
+            awayTeam.setPoints(awayTeam.getPoints() + 1);
+            homeTeam.setPoints(homeTeam.getPoints() + 1);
+            homeTeam.setNumOfDrawn(homeTeam.getNumOfDrawn());
+            awayTeam.setNumOfDrawn(awayTeam.getNumOfDrawn());
         }
 
-        Team updatedHomeTeam = teamRepository.save(homeTeam);
-        Team updatedAwayTeam = teamRepository.save(awayTeam);
+        // save updated entities (teams)
+        teamRepository.save(homeTeam);
+        teamRepository.save(awayTeam);
     }
 
-    public void doMatches(Team homeTeam, Team awayTeam) {
-
-        int homeTeamGoal = (int) (Math.random() * (7 - 0)) + 0;
-        int awayTeamGoal = (int) (Math.random() * (7 - 0)) + 0;
-
-        System.out.println("homeTeamName: " + homeTeam.teamName + "homeTeamGoal: " + homeTeamGoal);
-        System.out.println("awayTeamName: " + awayTeam.teamName + "awayTeamGoal: " + awayTeamGoal);
-
-        homeTeam.average = homeTeam.average + homeTeamGoal - awayTeamGoal;
-        awayTeam.average = awayTeam.average + awayTeamGoal - homeTeamGoal;
-
-        if (homeTeamGoal > awayTeamGoal) {
-            homeTeam.points = homeTeam.points + 3;
-            homeTeam.numOfWon++;
-            awayTeam.numOfLost++;
-        } else if (homeTeamGoal < awayTeamGoal) {
-            awayTeam.points = awayTeam.points + 3;
-            homeTeam.numOfLost++;
-            awayTeam.numOfLost++;
-        } else {
-            awayTeam.points = awayTeam.points + 1;
-            homeTeam.points = homeTeam.points + 1;
-            homeTeam.numOfDrawn++;
-            awayTeam.numOfDrawn++;
-        }
-
-        Team updatedHomeTeam = teamRepository.save(homeTeam);
-        Team updatedAwayTeam = teamRepository.save(awayTeam);
-
-        List<Team> teams = new ArrayList<>();
-
-        teams.add(updatedHomeTeam);
-        teams.add(updatedAwayTeam);
-    }
-
-    // update user
+    // update match
     @PutMapping("/teams/")
     public ResponseEntity<Team> updateUser(@PathVariable Integer id, @RequestBody Match match) {
-        Team homeTeam = teamRepository.findById(match.homeTeamId)
+        Team homeTeam = teamRepository.findById(match.getHomeTeamId())
                 .orElseThrow(() -> new ResourseNotFoundException("team Not Found"));
-        Team awayTeam = teamRepository.findById(match.awayTeamId)
+        Team awayTeam = teamRepository.findById(match.getAwayTeamId())
                 .orElseThrow(() -> new ResourseNotFoundException("team Not Found"));
 
-        int homeTeamGoal = match.homeTeamGoal;
-        int awayTeamGoal = match.awayTeamGoal;
+        int homeTeamGoal = match.getHomeTeamGoal();
+        int awayTeamGoal = match.getAwayTeamGoal();
 
-        homeTeam.average = homeTeam.average + homeTeamGoal - awayTeamGoal;
-        awayTeam.average = homeTeam.average + awayTeamGoal - homeTeamGoal;
+        // set average of teams
+        homeTeam.setAverage(homeTeam.getAverage() + homeTeamGoal - awayTeamGoal);
+        awayTeam.setAverage(awayTeam.getAverage() + awayTeamGoal - homeTeamGoal);
 
+        // set goals of teams
+        homeTeam.setNumOfGoalsFor(homeTeam.getNumOfGoalsFor() + homeTeamGoal);
+        homeTeam.setNumOfGoalsAgainst(homeTeam.getNumOfGoalsAgainst() + awayTeamGoal);
+
+        awayTeam.setNumOfGoalsFor(awayTeam.getNumOfGoalsFor() + awayTeamGoal);
+        awayTeam.setNumOfGoalsAgainst(awayTeam.getNumOfGoalsAgainst() + homeTeamGoal);
+
+        // set number of played matches
+        homeTeam.setNumOfPlayed(homeTeam.getNumOfPlayed() + 1);
+        awayTeam.setNumOfPlayed(awayTeam.getNumOfPlayed() + 1);
+
+        /*
+         * distribute points
+         * win => 3 pts
+         * draw => 1 pts
+         * lose => 0 pts
+         */
         if (homeTeamGoal > awayTeamGoal) {
-            homeTeam.points = homeTeam.points + 3;
-            homeTeam.numOfWon++;
-            awayTeam.numOfLost--;
+            homeTeam.setPoints(homeTeam.getPoints() + 3);
+            homeTeam.setNumOfWon(homeTeam.getNumOfWon() + 1);
+            awayTeam.setNumOfLost(awayTeam.getNumOfLost() + 1);
         } else if (homeTeamGoal < awayTeamGoal) {
-            awayTeam.points = awayTeam.points + 3;
-            homeTeam.numOfWon--;
-            awayTeam.numOfLost++;
+
+            awayTeam.setPoints(awayTeam.getPoints() + 3);
+            homeTeam.setNumOfLost(homeTeam.getNumOfLost() + 1);
+            awayTeam.setNumOfWon(awayTeam.getNumOfWon());
         } else {
-            awayTeam.points = awayTeam.points + 1;
-            homeTeam.points = homeTeam.points + 1;
-            homeTeam.numOfDrawn++;
-            awayTeam.numOfDrawn++;
+            awayTeam.setPoints(awayTeam.getPoints() + 1);
+            homeTeam.setPoints(homeTeam.getPoints() + 1);
+            homeTeam.setNumOfDrawn(homeTeam.getNumOfDrawn());
+            awayTeam.setNumOfDrawn(awayTeam.getNumOfDrawn());
         }
 
+        // save updated entities (teams)
         Team updatedHomeTeam = teamRepository.save(homeTeam);
         Team updatedAwayTeam = teamRepository.save(awayTeam);
 
