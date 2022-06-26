@@ -8,7 +8,7 @@ import TeamService from '../Services/TeamService';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 export default function Home() {
     const [teams, setTeams] = useState([]);
     const [numOfWeek, setNumOfWeek] = useState(0);
@@ -30,6 +30,17 @@ export default function Home() {
         }).catch(err => {
             console.error(err);
         })
+    }
+
+    async function playAll() {
+        for (var i = 0; i < 6; i++) {
+            TeamService.playNextWeekRandomly(numOfWeek + 1).then(res => {
+                setMatchesOfWeek(res.data)
+                setNumOfWeek(numOfWeek + 1);
+            }).catch(err => {
+                console.error(err);
+            })
+        }
     }
 
     function deleteDb() {
@@ -76,22 +87,30 @@ export default function Home() {
                 </Grid>
             </Grid>
             {
-                numOfWeek == 6 ? (
-
-                    <Button
-                        onClick={() => deleteDb()}
-                        variant="contained"
-                        color="error"
-                        style={{ margin: 10 }}
-                        href="/"
-                        startIcon={<DeleteIcon />}
-                    >
-                        Delete Database
-                    </Button>)
+                numOfWeek === 6 ? (
+                    <div>
+                        <Button
+                            onClick={() => deleteDb()}
+                            variant="contained"
+                            color="error"
+                            style={{ margin: 10 }}
+                            href="/"
+                            startIcon={<DeleteIcon />}
+                        >
+                            Delete Database
+                        </Button>
+                    </div>
+                )
                     :
                     (
                         <div>
-                            <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
+                            <Button
+                                variant="contained"
+                                style={{ margin: 10 }}
+                                onClick={() => playAll()}
+                                >
+                                Play All
+                            </Button>
                             <Button
                                 variant="contained"
                                 style={{ margin: 10 }}
@@ -103,8 +122,9 @@ export default function Home() {
                                 onClick={() => getSimulate()}
                                 variant="contained"
                                 style={{ margin: 10 }}
+                                endIcon={<PlayCircleIcon />}
                             >
-                                Run Simulation
+                                Run Simulation Again
                             </Button>
                             <Button
                                 onClick={() => deleteDb()}
@@ -119,6 +139,6 @@ export default function Home() {
                         </div>
                     )
             }
-        </Grid>
+        </Grid >
     )
 }

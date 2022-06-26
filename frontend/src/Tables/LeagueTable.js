@@ -8,11 +8,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 export default function LeagueTable({rows, numOfWeek}) {
-
     return (
         <TableContainer component={Paper}
             style={{
-                backgroundColor: "RGB(220,220,220)", margin: 0, padding: 0
+                backgroundColor: "RGB(220,220,220)", margin: 10, marginRight:10, padding: 10
             }}>
             <div>League Table at {numOfWeek}th week</div>
             <Table sx={{ minWidth: 250 }} size="small" aria-label="simple table">

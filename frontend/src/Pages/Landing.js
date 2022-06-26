@@ -42,28 +42,29 @@ export default function Landing() {
 
 
     return (
-        <Grid container justifyContent="center" alignItems="center" >
-            <Grid item padding={20}>
-                <TextField
-                    id="myTextField"
-                    label="Text Field"
-                    variant="outlined"
-                    inputRef={addedTeamRef}
-                    style={{ marginRight: 20 }}
-                />
+        <Grid display="flex" container justifyContent="center" alignItems="center" >
+            <Grid padding={20}>
                 {
                     (teams.length < 4) ? (
-                        <Button
-                            variant="contained"
-                            onClick={() => { addTeam() }}
-                        >
-                            addTeams
-                        </Button>
+                        <Grid item>
+                            <TextField
+                                id="myTextField"
+                                label="Enter team name"
+                                variant="outlined"
+                                inputRef={addedTeamRef}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={() => { addTeam() }}
+                            >
+                                addTeams
+                            </Button>
+                        </Grid>
                     ) :
                         (
                             <Button
-                                href='/home' v
-                                ariant="contained"
+                                href='/home'
+                                variant="contained"
                                 color='secondary'
                                 endIcon={<ArrowRightIcon />}
                             >
@@ -71,7 +72,7 @@ export default function Landing() {
                             </Button>
                         )
                 }
-                <LeagueTable rows={teams} />
+                <LeagueTable rows={teams} numOfWeek={0} />
             </Grid>
         </Grid >
     )

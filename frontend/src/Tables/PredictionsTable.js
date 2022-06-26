@@ -27,10 +27,10 @@ export default function PredictionsTable({ predictions, numOfWeek }) {
     return (
         <TableContainer component={Paper}
             style={{
-                backgroundColor: "RGB(220,220,220)", margin: 0, padding: 0
+                backgroundColor: "RGB(220,220,220)", margin: 10, marginLeft:20, padding: 10
             }}
         >
-            <div>Predictions in {numOfWeek}th week</div>
+            <div>{numOfWeek}th Week Predictions of Championship</div>
             <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -52,7 +52,7 @@ export default function PredictionsTable({ predictions, numOfWeek }) {
                     ))
                     :
                     (
-                        <div style={{color:"red"}}>Predictions can be seen after 3 weeks</div>
+                        <div style={{color:"red"}}>Predictions will be seen after 3 weeks</div>
                     )
                 }
                 </TableBody>
