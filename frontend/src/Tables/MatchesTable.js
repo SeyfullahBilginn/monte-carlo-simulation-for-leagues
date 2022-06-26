@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import { TextField } from '@mui/material';
 
 export default function MatchesTable({matches, numOfWeek}) {
-    if(numOfWeek == 0) {
+    if(numOfWeek === 0) {
         return <div></div>
     }
     return (
@@ -26,12 +26,8 @@ export default function MatchesTable({matches, numOfWeek}) {
                                 <TextField
                                     label=""
                                     value={match.homeTeamGoal}
-                                    // onChange={handleChange}
                                     name="numberformat"
                                     id="formatted-numberformat-input"
-                                    // InputProps={{
-                                    //     inputComponent: NumberFormatCustom,
-                                    // }}
                                     variant="standard"
                                     size='small'
                                     style={{maxWidth:40}}
@@ -41,12 +37,8 @@ export default function MatchesTable({matches, numOfWeek}) {
                                 <TextField
                                     label=""
                                     value={match.awayTeamGoal}
-                                    // onChange={handleChange}
                                     name="numberformat"
                                     id="formatted-numberformat-input"
-                                    // InputProps={{
-                                    //     inputComponent: NumberFormatCustom,
-                                    // }}
                                     variant="standard"
                                     size='small'
                                     style={{maxWidth:40}}
