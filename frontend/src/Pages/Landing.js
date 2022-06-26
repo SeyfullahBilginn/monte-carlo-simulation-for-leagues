@@ -2,6 +2,7 @@ import { Grid, TextField, Button } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import TeamService from '../Services/TeamService';
 import LeagueTable from '../Tables/LeagueTable';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 export default function Landing() {
     const [teams, setTeams] = useState([]);
@@ -52,12 +53,20 @@ export default function Landing() {
                 />
                 {
                     (teams.length < 4) ? (
-                        <Button variant="contained" onClick={() => { addTeam() }}>
+                        <Button
+                            variant="contained"
+                            onClick={() => { addTeam() }}
+                        >
                             addTeams
                         </Button>
                     ) :
                         (
-                            <Button href='/home' variant="contained">
+                            <Button
+                                href='/home' v
+                                ariant="contained"
+                                color='secondary'
+                                endIcon={<ArrowRightIcon />}
+                            >
                                 go to simulation
                             </Button>
                         )

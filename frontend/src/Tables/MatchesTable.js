@@ -7,10 +7,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TextField } from '@mui/material';
 
-export default function MatchesTable({matches}) {
+export default function MatchesTable({matches, numOfWeek}) {
     return (
-        <TableContainer component={Paper}>
-            <div>nth Week Matches</div>
+        <TableContainer component={Paper} style={{margin:10, padding:10}}>
+            <div>{numOfWeek}th Week Matches</div>
             <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                 <TableBody>
                     {matches.map((match) => (

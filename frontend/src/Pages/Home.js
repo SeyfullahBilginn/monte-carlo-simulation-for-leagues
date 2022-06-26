@@ -17,7 +17,6 @@ export default function Home() {
 
     async function getTeams() {
         TeamService.getTeams().then(res => {
-            console.log("res");
             setTeams(res.data)
         }).catch(err => {
             console.error(err);
@@ -25,9 +24,7 @@ export default function Home() {
     }
 
     async function nextWeek() {
-        console.log(numOfWeek);
         TeamService.playNextWeekRandomly(numOfWeek + 1).then(res => {
-            console.log(res);
             setMatchesOfWeek(res.data)
             setNumOfWeek(numOfWeek + 1);
         }).catch(err => {
@@ -45,19 +42,13 @@ export default function Home() {
 
     function getSimulate() {
         if (numOfWeek >= 3) {
-            console.log("SIM");
             TeamService.getSimulate(numOfWeek).then(res => {
-                console.log(res.data);
                 setPredictionsData(res.data);
                 const predictions = [];
                 Object.keys(res.data).map(key => {
-                    console.log("-----");
-                    console.log(key);
                     predictions.push({ "teamName": key, "percentage": res.data[key] })
-                    // setPredictionsData(...predictions, { "teamName": key, "percentage": res.data[key] })
                 })
                 setPredictionsData(predictions);
-                console.log(predictions);
             }).catch(err => {
                 console.log(err);
             })
@@ -90,11 +81,10 @@ export default function Home() {
                     <Button
                         onClick={() => deleteDb()}
                         variant="contained"
-                        component="link"
                         color="error"
                         style={{ margin: 10 }}
                         href="/"
-                        // startIcon={<DeleteIcon />}
+                        startIcon={<DeleteIcon />}
                     >
                         Delete Database
                     </Button>)
@@ -108,13 +98,6 @@ export default function Home() {
                                 onClick={() => nextWeek()}
                             >
                                 Next Week
-                            </Button>
-                            <Button
-                                onClick={() => getTeams()}
-                                variant="contained"
-                                style={{ margin: 10 }}
-                            >
-                                Get Teams
                             </Button>
                             <Button
                                 onClick={() => getSimulate()}
