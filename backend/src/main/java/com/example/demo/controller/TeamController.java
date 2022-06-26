@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,6 @@ public class TeamController {
     // get read user
     @GetMapping("/teams")
     public List<Team> getAllTeams() {
-        System.out.println("getAllTeams");
         return teamRepository.findAll(Sort.by(Sort.Direction.DESC, "points"));
     }
 
@@ -61,6 +61,12 @@ public class TeamController {
 
         // Team team = new Team(teamName, 0, 0, 0, 0, 0);
         return teamRepository.save(addedTeam);
+    }
+
+    @DeleteMapping("/teams")
+    public void deleteDatabase() {
+        teamRepository.deleteAll();
+        matchRepository.deleteAll();
     }
 
     @PostMapping("/playNextWeekRandomly/{numOfWeek}")
@@ -85,12 +91,11 @@ public class TeamController {
         System.out.println(matches);
         System.out.println("get: " + matches.get(1));
         List<Team> teams = teamRepository.findAll();
-        int randomNumber = (int) (Math.random() * (10 - 0)) + 0;
 
         // first matches in that week
         Team firstHomeTeam = teams.get(matches.get(0));
         Team firstAwayTeam = teams.get(matches.get(1));
-        // doMatches(firstHomeTeam, firstAwayTeam);
+
         List<Match> results = new ArrayList<>();
 
         Match firstMatch = new Match(

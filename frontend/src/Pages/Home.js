@@ -33,6 +33,14 @@ export default function Home() {
         })
     }
 
+    function deleteDb() {
+        TeamService.deleteDb().then(res => {
+            console.log("database deleted successfully");
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     function getSimulate() {
         if(numOfWeek>=3) {
             console.log("SIM");
@@ -95,6 +103,14 @@ export default function Home() {
                     style={{ margin: 10 }}
                 >
                     Get Simulate
+                </Button>
+                <Button
+                    onClick={() => deleteDb()}
+                    variant="contained"
+                    style={{ margin: 10 }}
+                    href="/"
+                >
+                    Delete Database
                 </Button>
             </div>
         </Grid>
