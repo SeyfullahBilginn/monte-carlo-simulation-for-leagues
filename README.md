@@ -19,4 +19,4 @@ MySql
 #### `Frontend: `
 Javascript, React, Material-ui
 
-##### Note: don't forget to change your mySql password before running the project
+##### Note: don't forget to change your mySql password in application.properties before running the project
