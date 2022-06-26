@@ -80,10 +80,7 @@ public class TeamController {
     @PostMapping("/playNextWeekRandomly/{numOfWeek}")
     public List<Match> playNextWeek(@PathVariable int numOfWeek) {
 
-        System.out.println("numOfWeek: " + numOfWeek);
         List<Integer> matches = fixture.get(numOfWeek);
-        System.out.println(matches);
-        System.out.println("get: " + matches.get(1));
         List<Team> teams = teamRepository.findAll();
 
         // first matches in that week
@@ -124,6 +121,15 @@ public class TeamController {
         matchRepository.save(secondMatch);
 
         return results;
+    }
+
+    @PostMapping("/playAllWeeksRandomly/{numOfWeek}")
+    public List<Match> playAllWeeks(@PathVariable int numOfWeek) {
+        List<Match> lastMatches = new ArrayList<>();
+        for (int i = numOfWeek; i <= 6; i++) {
+            lastMatches = playNextWeek(i);
+        }
+        return lastMatches;
     }
 
     // simulates left matches based on each team's pts they have already earned

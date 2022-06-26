@@ -17,6 +17,10 @@ class TeamService {
         return axios.post(API_BASE_URL + "/playNextWeekRandomly/" + numOfWeek);
     }
 
+    playAllWeeksRandomly(numOfWeek) {
+        return axios.post(API_BASE_URL + "/playAllWeeksRandomly/" + numOfWeek);
+    }
+
     getSimulate(numOfWeek) {
         return axios.request(API_BASE_URL + "/teams/simulate/" + numOfWeek)
     }

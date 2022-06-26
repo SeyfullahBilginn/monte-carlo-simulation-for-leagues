@@ -33,14 +33,13 @@ export default function Home() {
     }
 
     async function playAll() {
-        for (var i = 0; i < 6; i++) {
-            TeamService.playNextWeekRandomly(numOfWeek + 1).then(res => {
-                setMatchesOfWeek(res.data)
-                setNumOfWeek(numOfWeek + 1);
-            }).catch(err => {
-                console.error(err);
-            })
-        }
+        TeamService.playAllWeeksRandomly(numOfWeek + 1).then(res => {
+            setMatchesOfWeek(res.data)
+            setNumOfWeek(6);
+        }).catch(err => {
+            console.error(err);
+        })
+
     }
 
     function deleteDb() {
@@ -74,7 +73,6 @@ export default function Home() {
 
     return (
         <Grid container style={{ padding: 10 }}>
-            <div>{numOfWeek}</div>
             <Grid container style={{ display: "flex", flexDirection: "row" }}>
                 <Grid item>
                     <LeagueTable rows={teams} numOfWeek={numOfWeek} />
