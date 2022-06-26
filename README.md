@@ -1,7 +1,6 @@
-# Monte Carlo Simulation for League
+# Monte Carlo Simulation for League!
 
-
-https://user-images.githubusercontent.com/86732121/175826582-00e45a43-909a-4e13-ac48-e022aca27eb7.mp4
+![84jPNW_d807504c408968a418e946980bec1f3c_00-00-00_00-00-30_1](https://user-images.githubusercontent.com/86732121/175828529-e17a020c-483c-4685-a52a-b03f0e1d6e7b.gif)
 
 ## Development Process
 
@@ -19,4 +18,4 @@ MySql
 #### `Frontend: `
 Javascript, React, Material-ui
 
-##### Note: don't forget to change your mySql password in application.properties before running the project
+##### Note: Don't forget to set your mySql password in application.properties before running the project
