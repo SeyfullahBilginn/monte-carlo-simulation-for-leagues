@@ -29,6 +29,7 @@ export default function LeagueTable({rows}) {
                     <TableRow>
                         <TableCell>Teams</TableCell>
                         <TableCell align="right">PTS</TableCell>
+                        <TableCell align="right">P</TableCell>
                         <TableCell align="right">W</TableCell>
                         <TableCell align="right">D</TableCell>
                         <TableCell align="right">L</TableCell>
@@ -45,6 +46,7 @@ export default function LeagueTable({rows}) {
                                 {row.teamName}
                             </TableCell>
                             <TableCell align="right">{row.points}</TableCell>
+                            <TableCell align="right">{row.numOfPlayed}</TableCell>
                             <TableCell align="right">{row.numOfWon}</TableCell>
                             <TableCell align="right">{row.numOfDrawn}</TableCell>
                             <TableCell align="right">{row.numOfLost}</TableCell>

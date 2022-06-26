@@ -21,6 +21,9 @@ class TeamService {
         return axios.get(API_BASE_URL + "/simulate/" + numOfWeek)
     }
 
+    deleteDb() {
+        return axios.delete(API_BASE_URL + "/teams");
+    }
 }
 
 export default new TeamService();

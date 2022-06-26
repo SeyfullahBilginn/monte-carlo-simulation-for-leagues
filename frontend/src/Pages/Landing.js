@@ -17,6 +17,7 @@ export default function Landing() {
             numOfWon: 0,
             numOfDrawn: 0,
             numOfLost: 0,
+            numOfPlayed: 0,
             average: 0,
         }
         setTeams(oldArray => [...oldArray, addedTeam]);
@@ -27,6 +28,8 @@ export default function Landing() {
     function addTeamToDb(addedTeam) {
         TeamService.addTeam(addedTeam);
     }
+
+
     return (
         <Grid container justifyContent="center" alignItems="center" >
             <Grid item padding={20}>
