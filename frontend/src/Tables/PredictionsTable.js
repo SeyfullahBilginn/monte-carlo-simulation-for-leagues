@@ -8,30 +8,29 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
+export default function PredictionsTable({ predictions, numOfWeek }) {
+    const [table, setTable] = React.useState();
 
-const rowsProbability = [
-    createData('Arsenal', "%45"),
-    createData('Liverpool', "%25"),
-    createData('Chelsea', "15%"),
-    createData('Manchester City', "15%"),
-];
+    async function setData(data){
+        setTable(data)
+    }
 
-export default function PredictionsTable({ predictions }) {
     React.useEffect(() => {
-        console.log("table");
-        console.log(predictions);
-    }, [])
+        predictions.sort((a,b) => b.percentage - a.percentage); // b - a for reverse sort
+        setData(predictions)
+    }, [predictions])
 
+    if(!table) return (
+        <div>Loading</div>
+    );
+    
     return (
         <TableContainer component={Paper}
             style={{
-                backgroundColor: "RGB(220,220,220)", margin: 0, padding: 0
+                backgroundColor: "RGB(220,220,220)", margin: 10, marginLeft:20, padding: 10
             }}
         >
-            <div>Predictions</div>
+            <div>{numOfWeek}th Week Predictions of Championship</div>
             <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -40,7 +39,7 @@ export default function PredictionsTable({ predictions }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {predictions.length>0 ? predictions.map((item) => (
+                    {table.length>0 ? table.map((item) => (
                         <TableRow
                             key={item.teamName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -53,9 +52,8 @@ export default function PredictionsTable({ predictions }) {
                     ))
                     :
                     (
-                        <div style={{color:"red"}}>Predictions can be seen after 3 weeks</div>
+                        <div style={{color:"red"}}>Predictions will be seen after 3 weeks</div>
                     )
-                
                 }
                 </TableBody>
             </Table>

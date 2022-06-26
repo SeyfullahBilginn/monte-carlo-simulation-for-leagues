@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import LeagueTable from '../Tables/LeagueTable';
 import PredictionsTable from '../Tables/PredictionsTable';
@@ -6,7 +7,8 @@ import { Button, Grid } from '@mui/material';
 import TeamService from '../Services/TeamService';
 import { useState } from 'react';
 import { useEffect } from 'react';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 export default function Home() {
     const [teams, setTeams] = useState([]);
     const [numOfWeek, setNumOfWeek] = useState(0);
@@ -15,7 +17,6 @@ export default function Home() {
 
     async function getTeams() {
         TeamService.getTeams().then(res => {
-            console.log("res");
             setTeams(res.data)
         }).catch(err => {
             console.error(err);
@@ -23,14 +24,22 @@ export default function Home() {
     }
 
     async function nextWeek() {
-        console.log(numOfWeek);
         TeamService.playNextWeekRandomly(numOfWeek + 1).then(res => {
-            console.log(res);
             setMatchesOfWeek(res.data)
             setNumOfWeek(numOfWeek + 1);
         }).catch(err => {
             console.error(err);
         })
+    }
+
+    async function playAll() {
+        TeamService.playAllWeeksRandomly(numOfWeek + 1).then(res => {
+            setMatchesOfWeek(res.data)
+            setNumOfWeek(6);
+        }).catch(err => {
+            console.error(err);
+        })
+
     }
 
     function deleteDb() {
@@ -42,20 +51,14 @@ export default function Home() {
     }
 
     function getSimulate() {
-        if(numOfWeek>=3) {
-            console.log("SIM");
+        if (numOfWeek >= 3) {
             TeamService.getSimulate(numOfWeek).then(res => {
-                console.log(res.data);
                 setPredictionsData(res.data);
                 const predictions = [];
                 Object.keys(res.data).map(key => {
-                    console.log("-----");
-                    console.log(key);
                     predictions.push({ "teamName": key, "percentage": res.data[key] })
-                    // setPredictionsData(...predictions, { "teamName": key, "percentage": res.data[key] })
                 })
                 setPredictionsData(predictions);
-                console.log(predictions);
             }).catch(err => {
                 console.log(err);
             })
@@ -64,55 +67,76 @@ export default function Home() {
 
     useEffect(() => {
         getTeams();
+        if (numOfWeek >= 3) getSimulate();
     }, [numOfWeek])
 
 
     return (
         <Grid container style={{ padding: 10 }}>
-            <div>{numOfWeek}</div>
             <Grid container style={{ display: "flex", flexDirection: "row" }}>
                 <Grid item>
-                    <LeagueTable rows={teams} />
+                    <LeagueTable rows={teams} numOfWeek={numOfWeek} />
                 </Grid>
                 <Grid item maxWidth={500}>
-                    <MatchesTable matches={matchesOfWeek} />
+                    <MatchesTable matches={matchesOfWeek} numOfWeek={numOfWeek} />
                 </Grid>
                 <Grid item>
-                    <PredictionsTable predictions={predictionsData} />
+                    <PredictionsTable predictions={predictionsData} numOfWeek={numOfWeek} />
                 </Grid>
             </Grid>
-            <div>
-                <Button variant="contained" style={{ margin: 10 }}>Play All</Button>
-                <Button
-                    variant="contained"
-                    style={{ margin: 10 }}
-                    onClick={() => nextWeek()}
-                >
-                    Next Week
-                </Button>
-                <Button
-                    onClick={() => getTeams()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                >
-                    Get Teams
-                </Button>
-                <Button
-                    onClick={() => getSimulate()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                >
-                    Get Simulate
-                </Button>
-                <Button
-                    onClick={() => deleteDb()}
-                    variant="contained"
-                    style={{ margin: 10 }}
-                    href="/"
-                >
-                    Delete Database
-                </Button>
-            </div>
-        </Grid>
+            {
+                numOfWeek === 6 ? (
+                    <div>
+                        <Button
+                            onClick={() => deleteDb()}
+                            variant="contained"
+                            color="error"
+                            style={{ margin: 10 }}
+                            href="/"
+                            startIcon={<DeleteIcon />}
+                        >
+                            Delete Database
+                        </Button>
+                    </div>
+                )
+                    :
+                    (
+                        <div>
+                            <Button
+                                variant="contained"
+                                style={{ margin: 10 }}
+                                onClick={() => playAll()}
+                                >
+                                Play All
+                            </Button>
+                            <Button
+                                variant="contained"
+                                style={{ margin: 10 }}
+                                onClick={() => nextWeek()}
+                            >
+                                Next Week
+                            </Button>
+                            <Button
+                                onClick={() => getSimulate()}
+                                variant="contained"
+                                style={{ margin: 10 }}
+                                endIcon={<PlayCircleIcon />}
+                            >
+                                Run Simulation Again
+                            </Button>
+                            <Button
+                                onClick={() => deleteDb()}
+                                variant="contained"
+                                color="error"
+                                style={{ margin: 10 }}
+                                href="/"
+                                startIcon={<DeleteIcon />}
+                            >
+                                Delete Database
+                            </Button>
+                        </div>
+                    )
+            }
+        </Grid >
     )
 }
